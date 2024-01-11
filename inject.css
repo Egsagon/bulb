@@ -1,0 +1,33 @@
+/* Style for the download buttons */
+
+.bulb {
+    background-color: #ff9000;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all ease-in-out .2s;
+}
+
+.bulb:hover {
+    background-color: #0e0e0e;
+    color: #fff;
+}
+
+.bulb i {
+    width: 10px;
+    height: 10px;
+    border: 3px solid gray;
+    border-radius: 50%;
+    border-bottom-color: transparent;
+    animation: bulb-dl 2s linear infinite;
+}
+
+@keyframes bulb-dl {
+    0% { rotate: 0deg }
+    100% { rotate: 360deg }
+}

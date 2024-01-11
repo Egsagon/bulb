@@ -1,0 +1,29 @@
+{
+    "manifest_version": 2,
+    "name": "Bulb",
+    "version": "0.1",
+    "description": "Bulb downloader",
+
+    "icons": { "32": "icon.svg" },
+
+    "permissions": [
+        "tabs",
+        "storage",
+        "webRequest",
+        "contextMenus",
+        "http://*/*",
+        "https://*/*"
+    ],
+
+    "background": {
+        "scripts": ["download.js"],
+        "persistent": false
+    },
+
+    "content_scripts": [{
+        "matches": ["*://www.pornhub.com/*"],
+        "js": ["inject.js"],
+        "css": ["inject.css"],
+        "run_at": "document_start"
+    }]
+}
