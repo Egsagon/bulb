@@ -7,7 +7,7 @@ const root = 'https://www.pornhub.com/view_video.php?viewkey='
 const headers = new Headers()
 
 headers.append('Accept', '*/*')
-headers.append('Accept-Encoding', 'gzip, deflate, br')
+// headers.append('Accept-Encoding', 'gzip, deflate, br')
 headers.append('Accept-Language', 'en,en-US')
 headers.append('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0')
 headers.append('Samesite', 'None; Secure')
@@ -17,12 +17,15 @@ headers.append('Samesite', 'None; Secure')
 
 var queue = []
 
-greq = async (url) => {
+greq = async (url, text = true) => {
     let req = new Request(url, {method: 'GET', headers: headers})
     let res = await fetch(req)
 
     if (!res.ok) 'Error: ' + url
-    return await res.text()
+
+    if (text)
+        return await res.text()
+    return await res
 }
 
 download = async (key, responder) => {
@@ -43,26 +46,40 @@ download = async (key, responder) => {
         if (/^\d+$/.test(value)) qualities.push([Number(value), qual.videoUrl])
     })
 
-    let [qual, source] = qualities.sort().slice(quality === 'best' ? 0 : -1)
+    let [qual, source] = qualities.sort().slice(quality === 'best' ? 0 : -1)[0]
+
     let cdn = source.split('master.m3u8')[0]
     
     // Fetch segments
     let master = await greq(source)
     let playlist = await greq(cdn + re_segment.exec(master)[1])
-    let segments = re_segment.exec(playlist)
+    let segments = playlist.match(re_segment)
 
-    console.log('Fetched URLS', segments)
+    responder(true)
+    console.log(`[ BULD ] Downloading ${segments.length} segments`)
 
+    // Start download
+    let buffer = []
+    let blob = new Blob([ buffer ])
 
-    // Temp test with download API
-    let blob = new Blob(segments)
+    for (let index = 0; index < segments.length; index++) {
+        let url = cdn + segments[index]
 
+        console.log('Downloading segment', index)
+        res = await greq(url, false)
+        
+        raw = await res.blob()
+        blob = new Blob([blob, raw])
+        
+        buffer.push(raw)
+        break
+    }
+
+    console.log('Downloading blob')
     await browser.downloads.download({
         url: URL.createObjectURL(blob),
-        filename: key + '.txt'
+        filename: key + '.mp4'
     })
-
-    return responder(true)
 }
 
 
@@ -74,3 +91,5 @@ browser.runtime.onMessage.addListener((msg, sender, responder) => {
     // Allow async return
     return true
 })
+
+// EOF

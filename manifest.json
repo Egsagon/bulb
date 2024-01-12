@@ -11,6 +11,9 @@
         "storage",
         "webRequest",
         "contextMenus",
+        "downloads",
+        "downloads.open",
+
         "http://*/*",
         "https://*/*"
     ],
