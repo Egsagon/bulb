@@ -27,6 +27,10 @@
     animation: bulb-dl 2s linear infinite;
 }
 
+.bulb-success {
+    background-color: cyan;
+}
+
 @keyframes bulb-dl {
     0% { rotate: 0deg }
     100% { rotate: 360deg }

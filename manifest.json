@@ -4,7 +4,7 @@
     "version": "0.1",
     "description": "Bulb downloader",
 
-    "icons": { "32": "icon.svg" },
+    "icons": { "24": "icon.svg" },
 
     "permissions": [
         "tabs",

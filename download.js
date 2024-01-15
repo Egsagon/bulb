@@ -55,7 +55,10 @@ download = async (key, responder) => {
     let playlist = await greq(cdn + re_segment.exec(master)[1])
     let segments = playlist.match(re_segment)
 
-    responder(true)
+    let progress = 'In queue'
+
+    responder(() => progress) // Allow us to update progress
+
     console.log(`[ BULD ] Downloading ${segments.length} segments`)
 
     // Start download
@@ -72,7 +75,8 @@ download = async (key, responder) => {
         blob = new Blob([blob, raw])
         
         buffer.push(raw)
-        break
+
+        progress = `${index}/${segments.length}`
     }
 
     console.log('Downloading blob')

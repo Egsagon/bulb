@@ -13,11 +13,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
             ev.target.innerHTML = '<i></i>'
 
-            stat = await browser.runtime.sendMessage({
+            progress = await browser.runtime.sendMessage({
                 key: ev.target.parentNode.dataset.videoVkey
             })
 
-            console.log('Got status', stat)
+            console.log('Got response', progress)
+
+            let inter = setInterval(() => {
+                let value = progress()
+                console.log('Updating value', value)
+                ev.target.innerHTML = value
+
+
+                if (value === 'Done') {
+                    clearInterval(inter)
+                    ev.target.classList.add('bulb-success')
+                }
+
+            }, 1000)
 
             // ev.target.innerHTML = 'Done'
         })
