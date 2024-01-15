@@ -7,26 +7,22 @@
     "icons": { "24": "icon.svg" },
 
     "permissions": [
-        "tabs",
         "storage",
-        "webRequest",
-        "contextMenus",
         "downloads",
-        "downloads.open",
-
+        "webRequest",
         "http://*/*",
         "https://*/*"
     ],
 
     "background": {
-        "scripts": ["download.js"],
-        "persistent": false
+        "scripts": [ "download.js" ],
+        "persistent": true
     },
 
     "content_scripts": [{
-        "matches": ["*://www.pornhub.com/*"],
-        "js": ["inject.js"],
-        "css": ["inject.css"],
+        "matches": [ "*://www.pornhub.com/*" ],
+        "js":      [ "injections/inject.js"  ],
+        "css":     [ "injections/inject.css" ],
         "run_at": "document_start"
     }]
 }

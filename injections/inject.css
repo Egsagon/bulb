@@ -1,4 +1,6 @@
-/* Style for the download buttons */
+/*
+    Stylesheet for the BULB buttons
+*/
 
 .bulb {
     background-color: #ff9000;
@@ -31,7 +33,12 @@
     background-color: cyan;
 }
 
+.video-actions-menu .bulb {
+    height: 40px;
+}
+
 @keyframes bulb-dl {
+    /* Loader animation */
     0% { rotate: 0deg }
     100% { rotate: 360deg }
 }
