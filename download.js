@@ -50,36 +50,36 @@ const download = async (key, responder) => {
         let master = await greq(source)
         let playlist = await greq(cdn + re_segment.exec(master)[1])
         let segments = playlist.match(re_segment)
+
+        // Start download
+        let buffer = []
+        let blob = new Blob([ buffer ])
+
+        for (let index = 0; index < segments.length; index++) {
+            let url = cdn + segments[index]
+
+            // Add each segment to buffer
+            console.debug(`[ ${key} ] Downloading ${index}/${segments.length}`)
+            res = await greq(url, false)
+            
+            raw = await res.blob()
+            blob = new Blob([blob, raw])
+            buffer.push(raw)
+        }
+
+        console.log(`[ ${key} ] Saving file`)
+        responder({ 'message': 'Success' })
+
+        await browser.downloads.download({
+            url: URL.createObjectURL(blob),
+            filename: key + '.mp4'
+        })
     
     }
     catch (error) {
-        responder({'message': 'Error: Invalid video'})
+        responder({'message': `Error: ${error}`})
         throw error
     }
-
-    // Start download
-    let buffer = []
-    let blob = new Blob([ buffer ])
-
-    for (let index = 0; index < segments.length; index++) {
-        let url = cdn + segments[index]
-
-        // Add each segment to buffer
-        console.debug(`[ ${key} ] Downloading ${index}/${segments.length}`)
-        res = await greq(url, false)
-        
-        raw = await res.blob()
-        blob = new Blob([blob, raw])
-        buffer.push(raw)
-    }
-
-    console.log(`[ ${key} ] Saving file`)
-    responder({ 'message': 'Success' })
-
-    await browser.downloads.download({
-        url: URL.createObjectURL(blob),
-        filename: key + '.mp4'
-    })
 }
 
 browser.runtime.onMessage.addListener((msg, sender, responder) => {

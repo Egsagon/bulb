@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Bulb",
     "version": "0.1",
-    "description": "Bulb downloader",
+    "description": "A simple Pornhub downloader",
 
     "icons": { "24": "icon.svg" },
 
