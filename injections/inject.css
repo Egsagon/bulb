@@ -2,43 +2,65 @@
     Stylesheet for the BULB buttons
 */
 
+body {
+    background-color: #1f1f1f;
+}
+
 .bulb {
-    background-color: #ff9000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100000;
     border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 30px;
-    width: 100%;
-    border-radius: 5px;
+    padding: 8px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all ease-in-out .2s;
+    background-color: orange;
+    overflow: hidden;
+    width: calc(100% - 20px);
+    height: 35px;
+    transition: background-color ease-in-out .2s;
+    margin: 10px;
 }
 
-.bulb:hover {
-    background-color: #0e0e0e;
-    color: #fff;
+.bulb p {
+    all: unset;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    color: #1f1f1f;
+    font-size: 14px;
 }
 
-.bulb i {
-    width: 10px;
-    height: 10px;
-    border: 3px solid gray;
-    border-radius: 50%;
-    border-bottom-color: transparent;
-    animation: bulb-dl 2s linear infinite;
+.bulb div {
+    position: absolute;
+    background-color: orange;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: width ease-in-out .5s;
+    visibility: hidden;
 }
 
-.bulb-success {
-    background-color: #7343e3;
+.bulb.success {
+    background-color: green;
+    cursor: unset;
 }
 
-.video-actions-menu .bulb {
-    height: 40px;
+.bulb.running {
+    background-color: #181818;
 }
 
-@keyframes bulb-dl {
-    /* Loader animation */
-    0% { rotate: 0deg }
-    100% { rotate: 360deg }
+.bulb.running div {
+    visibility: visible;
+}
+
+.bulb.error {
+    background-color: red;
+}
+
+.bulb:hover:not(.running, .success) {
+    background-color: orangered;
 }
