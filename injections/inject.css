@@ -32,6 +32,7 @@ body {
     z-index: 100;
     color: #1f1f1f;
     font-size: 14px;
+    mix-blend-mode: difference;
 }
 
 .bulb div {

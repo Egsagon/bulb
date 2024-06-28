@@ -4,13 +4,19 @@
 
 console.log('[ BACKGROUND SCRIPT RUNNING ]')
 
+const queue = []
+var current_downloads = 0
+const concurrent_downloads = 4
+
 const re_segment = /(^[^#\n].+)$/gm
 const re_flash = /var (flashvars_\d*) = ({.*});\n/g
 const root = 'https://www.pornhub.com/view_video.php?viewkey='
 
 // TODO - Get headers & cookies from target page for hidden/paywalled videos
 const headers = new Headers({
-    'Accept': '*/*', 'Samesite': 'None; Secure', 'Accept-Language': 'en,en-US',
+    'Accept': '*/*',
+    'Samesite': 'None; Secure',
+    'Accept-Language': 'en,en-US',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0'
 })
 
@@ -18,7 +24,7 @@ const send_request = async (url, text = true) => {
     let req = new Request(url, {method: 'GET', headers: headers})
     let res = await fetch(req)
 
-    if (!res.ok) 'Error: ' + url
+    if (!res.ok) throw new Error(`HTTPError: error ${res.status}`)
 
     if (text)
         return await res.text()
@@ -89,10 +95,23 @@ const download = async (key, tab, responder) => {
     }
 }
 
+const process = function() {
+    if (!(queue.length > 0 && current_downloads < concurrent_downloads)) return
+
+    const {msg, sender, responder} = queue.shift();
+    current_downloads++;
+
+    download(msg.key, sender.tab.id, responder).then(() => {
+        current_downloads--;
+        process();
+    })
+}
+
 browser.runtime.onMessage.addListener((msg, sender, responder) => {
     // Receive messages from injection scripts
 
-    download(msg.key, sender.tab.id, responder)
+    queue.push({msg, sender, responder})
+    process()
     
     // Allow async return
     return true
